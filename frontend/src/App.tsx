@@ -1,33 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import useAuth from './hooks/useAuth';
+import clsx from 'clsx';
+import Login from './components/Login';
+import { Spin } from 'antd';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {state: authState} = useAuth();
+
+  function renderContent() {
+    switch (authState) {
+      case "idle":
+        return <Spin />;
+      case "loggedout":
+        return <Login />;
+    }
+
+    return <div className='text-green-500'>Anda sudah masuk.</div>;
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='w-full flex flex-col items-center min-h-screen justify-center'>
+      <div className={clsx(
+        'flex flex-col items-center bg-gray-100 shadow-xl rounded-md p-8 text-center md:w-sm w-[90%]',
+        )}>
+        { renderContent() }
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 

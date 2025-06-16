@@ -1,44 +1,14 @@
 @import "tailwindcss";
 
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+html, body, #root {
+  height: 100%;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+body {
+  background-color: #dce6e7;
+  background-image: radial-gradient(ellipse at 10% 10%,#906ac455 0%,#906ac455 20%,transparent 50%),
+  radial-gradient(ellipse at 60% 10%,#80bee755 0%,#80bee755 20%,transparent 50%),
+  radial-gradient(ellipse at 20% 30%,#4e84d655 0%,#4e84d655 5%,transparent 60%),
+  radial-gradient(ellipse at 90% 75%,#5369e966 0%,#5369e966 20%,transparent 50%),
+  radial-gradient(ellipse at 40% 80%,#5369e966 0%,#5369e966 20%,transparent 50%);
 }
