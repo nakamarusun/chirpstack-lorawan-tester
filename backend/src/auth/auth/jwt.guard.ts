@@ -15,8 +15,8 @@ export class JwtAuthGuard extends AuthGuard("jwt") implements CanActivate {
   private async checkPrivileges(context: ExecutionContext): Promise<boolean> {
     // Check if the user in the parameter is privileged to do this
     const request = context.switchToHttp().getRequest();
-    const user: CustomJwtPayload | undefined = request.user;
-    if (!user) return false;
+    const id: CustomJwtPayload | undefined = request.id;
+    if (!id) return false;
 
     return true;
   }
