@@ -13,9 +13,11 @@ export class EventsService {
   listenToApp() : Observable<string> {
     return new Observable<string>((observer) => {
       // Simulate receiving data from the application
-      setInterval(() => {
-        observer.next("New packet received");
-      }, 1000);
+      this.subject.asObservable().subscribe({
+        next: (data) => {
+          observer.next(data);
+        }
+      });
     });
   }
 }

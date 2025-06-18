@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import config from '../config';
 import { EventSource } from 'eventsource';
 import useAuth from '../hooks/useAuth';
