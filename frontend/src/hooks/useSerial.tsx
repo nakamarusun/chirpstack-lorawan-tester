@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 export type DataBitsType = 7 | 8;
 export type StopBitsType = 1 | 2;
@@ -9,8 +9,11 @@ export type SerialOnDataNotify = (data: string) => void
 
 interface SerialContext {
   sendData(data: string): Promise<void>;
+  sendAndWait(data: string, timeout: number): Promise<string>;
   onDataReceived(callback: SerialOnDataNotify): void;
   releaseOnDataReceived(callback: SerialOnDataNotify): void;
+  onDataSent(callback: SerialOnDataNotify): void;
+  releaseDataSent(callback: SerialOnDataNotify): void;
   closeConnection(): Promise<void>;
   openConnection(
     baud: number,
@@ -20,44 +23,49 @@ interface SerialContext {
     stopBits: StopBitsType,
     enterSends: EnterSendsType
   ): Promise<void>;
-  status: SerialConnectionType;
+  state: SerialConnectionType;
 }
 
 export function SerialProvider({ children }: { children: React.ReactNode }) {
   const [port, setPort] = useState<SerialPort | null>(null);
   const [enterSends, setEnterSends] = useState<EnterSendsType>("\r\n");
-  const [toNotify, setToNotify] = useState<SerialOnDataNotify[]>([]);
+
+  const toNotifyRef = useRef<SerialOnDataNotify[]>([]);
+  const onSentRef = useRef<SerialOnDataNotify[]>([]);
 
   useEffect(() => {
     if (!port) return;
 
-    const reader = port.readable.getReader();
-    const decoder = new TextDecoder();
-
-    async function readLoop() {
+    const textDecoder = new TextDecoderStream();
+    const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+    const reader = textDecoder.readable.getReader();
+    
+    (async () => {
       try {
         while (true) {
           const { value, done } = await reader.read();
           if (done) break;
-          const data = decoder.decode(value);
-          toNotify.forEach(callback => callback(data));
+          // console.log("Data received:", value, toNotifyRef.current.length);
+          toNotifyRef.current.forEach(callback => callback(value));
         }
       } catch (error) {
         console.error("Error reading from serial port:", error);
       } finally {
         reader.releaseLock();
       }
-    }
 
-    readLoop();
+      await readableStreamClosed.catch((error) => {
+        console.error("Error closing readable stream:", error);
+      });
+    })();
 
     return () => {
-      reader.cancel();
+      reader.releaseLock();
     };
   }, [port]);
 
   const contextValue: SerialContext = {
-    status: port ? "connected" : "disconnected",
+    state: port ? "connected" : "disconnected",
     openConnection: async (baud, flowControl, parity, dataBits, stopBits, enterSends) => {
       try {
         const serial: Serial | undefined = navigator.serial;
@@ -93,7 +101,13 @@ export function SerialProvider({ children }: { children: React.ReactNode }) {
       const encodedData = encoder.encode(data + enterSends);
       const writer = port.writable.getWriter();
       try {
+        // console.log("Sending data:", data);
         await writer.write(encodedData);
+        // console.log("Data sent:", data);
+        onSentRef.current.forEach(callback => callback(data));
+      } catch (error) {
+        console.error("Error sending data:", error);
+        throw error;
       } finally {
         writer.releaseLock();
       }
@@ -102,10 +116,40 @@ export function SerialProvider({ children }: { children: React.ReactNode }) {
       if (!port) {
         throw new Error("Serial port is not open.");
       }
-      setToNotify((prev) => [...prev, callback]);
+      toNotifyRef.current.push(callback);
     },
     releaseOnDataReceived: (callback: SerialOnDataNotify) => {
-      setToNotify((prev) => prev.filter(cb => cb !== callback));
+      toNotifyRef.current = toNotifyRef.current.filter(cb => cb !== callback);
+    },
+    sendAndWait: async (data: string, timeout: number): Promise<string> => {
+      return new Promise((resolve, reject) => {
+        let resolved = false;
+        const onrecv: SerialOnDataNotify = (receivedData) => {
+          contextValue.releaseOnDataReceived(onrecv);
+          resolved = true;
+          resolve(receivedData);
+        };
+        contextValue.onDataReceived(onrecv);
+        contextValue.sendData(data)
+          .catch((error) => {
+            reject(error);
+          });
+
+        setTimeout(() => {
+          if (resolved) return;
+          contextValue.releaseOnDataReceived(onrecv);
+          reject(new Error("Timeout waiting for response"));
+        }, timeout);
+      });
+    },
+    onDataSent: (callback: SerialOnDataNotify) => {
+      if (!port) {
+        throw new Error("Serial port is not open.");
+      }
+      onSentRef.current.push(callback);
+    },
+    releaseDataSent: (callback: SerialOnDataNotify) => {
+      onSentRef.current = onSentRef.current.filter(cb => cb !== callback);
     },
   };
 
