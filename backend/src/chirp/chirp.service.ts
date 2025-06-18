@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DeviceConnectRequest } from 'src/models/chirp';
+import { DeviceConnectRequest, DownlinkRequest } from 'src/models/chirp';
+import { nanoid } from 'nanoid';
 
 export enum DeviceChirpstackStatus {
   NOT_REGISTERED,
@@ -24,11 +25,12 @@ export class ChirpService {
     this.deviceProfile = this.config.get<string>("CHIRPSTACK_DEVICE_PROFILE_ID");
   }
 
-  async scheduleDownlink(
-    devEui: string,
-    fPort: number,
-    data: string,
-    confirmed: boolean = false) {
+  async scheduleDownlink({
+    devEui,
+    fPort,
+    data,
+    confirmed = false}: DownlinkRequest) {
+
     // First, get fcntdown
     const fcntdownResponse = await fetch(`${this.chirpApi}/api/devices/${devEui}/get-next-f-cnt-down`, {
       method: "POST",
@@ -43,7 +45,6 @@ export class ChirpService {
     const fcntdownData = await fcntdownResponse.json();
     const fCntDown = fcntdownData.fCntDown;
 
-    const { nanoid } = await import('nanoid');
     const downlinkId = nanoid(16);
     const downlinkData = {
       queueItem: {

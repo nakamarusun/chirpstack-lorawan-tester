@@ -24,24 +24,23 @@ export default function Login() {
   }
 
   return (
-    <div className="flex flex-col items-start w-full">
-      <h1 className='text-2xl font-bold mb-4'>
-        Chirpy the Helper
-      </h1>
+    <div className="flex flex-col items-start w-fit">
       <p className="text-sm font-semibold mb-1">
         Password
       </p>
-      <Input.Password
+      <input
         placeholder="Password"
-        className='mb-4'
+        className='mb-4 font-source-code-pro bg-gray-200 px-2 py-1 text-lg'
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        onPressEnter={submit}
+        onKeyDown={(e) => e.key === 'Enter' && submit()}
+        type="password"
+        autoFocus
       />
-      <div className="flex flex-row justify-end w-full">
-        <Button type="primary" size='large' onClick={submit}>
+      <div className="flex flex-row w-full">
+        <button onClick={submit} className="w-full font-source-code-pro bg-gray-400 font-bold py-1 text-lg">
           Login
-        </Button>
+        </button>
       </div>
     </div>
   )

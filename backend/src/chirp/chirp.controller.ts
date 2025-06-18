@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ChirpService } from './chirp.service';
-import { DeviceConnectRequest } from 'src/models/chirp';
+import { DeviceConnectRequest, DownlinkRequest } from 'src/models/chirp';
 
 @Controller('chirp')
 export class ChirpController {
@@ -12,5 +12,10 @@ export class ChirpController {
   @Post("/onconnect")
   async onConnect(@Body() body: DeviceConnectRequest) {
     this.chirpService.onDeviceConnect(body);
+  }
+
+  @Post("/downlink")
+  async onDownlink(@Body() body: DownlinkRequest) {
+    this.chirpService.scheduleDownlink(body);
   }
 }

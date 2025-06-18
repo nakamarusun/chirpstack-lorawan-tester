@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 @import "tailwindcss";
 
 html, body, #root {
@@ -5,10 +6,10 @@ html, body, #root {
 }
 
 body {
-  background-color: #dce6e7;
-  background-image: radial-gradient(ellipse at 10% 10%,#906ac455 0%,#906ac455 20%,transparent 50%),
-  radial-gradient(ellipse at 60% 10%,#80bee755 0%,#80bee755 20%,transparent 50%),
-  radial-gradient(ellipse at 20% 30%,#4e84d655 0%,#4e84d655 5%,transparent 60%),
-  radial-gradient(ellipse at 90% 75%,#5369e966 0%,#5369e966 20%,transparent 50%),
-  radial-gradient(ellipse at 40% 80%,#5369e966 0%,#5369e966 20%,transparent 50%);
+  background-color: #000;
+}
+
+@theme { 
+  --font-orbitron: "Orbitron", sans-serif;
+  --font-source-code-pro: "Source Code Pro", monospace;
 }

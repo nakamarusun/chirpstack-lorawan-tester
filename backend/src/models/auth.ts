@@ -1,5 +1,5 @@
 export interface CustomJwtPayload {
-  id: number;
+  id: string;
 }
 
 export interface LoginRequest {

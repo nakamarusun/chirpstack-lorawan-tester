@@ -4,3 +4,10 @@ export class DeviceConnectRequest {
   nwkSKey: string;
   appSKey: string;
 }
+
+export class DownlinkRequest {
+  devEui: string;
+  fPort: number;
+  data: string;
+  confirmed?: boolean;
+}
