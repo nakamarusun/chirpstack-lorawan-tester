@@ -1,5 +1,6 @@
-import { Body, Controller, Post, Query } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { ChirpWebhookService } from './chirp-webhook.service';
+import { Ctx, MessagePattern, MqttContext, Payload, Transport } from '@nestjs/microservices';
 
 @Controller('chirp-webhook')
 export class ChirpWebhookController {
@@ -8,17 +9,11 @@ export class ChirpWebhookController {
     private readonly chirpWebhookService: ChirpWebhookService
   ) {}
 
-  @Post('webhook')
+  @MessagePattern(`application/${process.env.CHIRPSTACK_TEST_APPLICATION}/device/+/event/up`, Transport.MQTT)
   onWebhook(
-    @Query("event") event: string,
-    @Body() data: any,
+    @Ctx() ctx: MqttContext
   ) {
-    console.log("Received webhook event:", event, data);
-    switch (event) {
-      case "up":
-        return this.chirpWebhookService.onUplink(data);
-      default:
-        return { message: "Event not supported" };
-    }
+    console.log("Received webhook data:", ctx.getPacket().payload.toString());
+    this.chirpWebhookService.onUplink(ctx.getPacket().payload.toString());
   }
 }
