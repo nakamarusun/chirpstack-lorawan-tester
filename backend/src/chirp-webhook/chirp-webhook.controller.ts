@@ -13,8 +13,9 @@ export class ChirpWebhookController {
     @Query("event") event: string,
     @Body() data: any,
   ) {
+    console.log("Received webhook event:", event, data);
     switch (event) {
-      case "uplink":
+      case "up":
         return this.chirpWebhookService.onUplink(data);
       default:
         return { message: "Event not supported" };
