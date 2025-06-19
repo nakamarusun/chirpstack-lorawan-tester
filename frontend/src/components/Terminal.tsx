@@ -108,7 +108,7 @@ export default function Terminal() {
             <p className="text-3xl font-bold mr-2">0</p>
           </div>
         </div>
-        <div className="bg-green-500 text-black py-0.5 md:pb-3 flex flex-col md:flex-row items-start md:items-center md:justify-between px-2">
+        <div className="bg-green-500 text-black py-0.5 flex flex-wrap flex-row items-start justify-between px-2">
           <div>
             <span className="mr-2">DevAddr:</span>
             <span>{devAddr}</span>

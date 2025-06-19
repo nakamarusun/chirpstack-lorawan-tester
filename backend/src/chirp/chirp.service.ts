@@ -19,7 +19,7 @@ export class ChirpService {
   constructor(
     private readonly config: ConfigService,
   ) {
-    this.chirpAppId = this.config.get<string>("CHIRPSTACK_AMR_APPLICATION");
+    this.chirpAppId = this.config.get<string>("CHIRPSTACK_TEST_APPLICATION");
     this.chirpApi = this.config.get<string>("CHIRPSTACK_API_URL");
     this.chirpKey = this.config.get<string>("CHIRPSTACK_API_KEY");
     this.deviceProfile = this.config.get<string>("CHIRPSTACK_DEVICE_PROFILE_ID");
@@ -57,7 +57,7 @@ export class ChirpService {
         isPending: true,
       }
     };
-    return await fetch(`${this.chirpApi}/api/devices/${devEui}/queue`, {
+    const response = await fetch(`${this.chirpApi}/api/devices/${devEui}/queue`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,6 +65,10 @@ export class ChirpService {
       },
       body: JSON.stringify(downlinkData)
     });
+    if (!response.ok) {
+      throw new Error(`Failed to schedule downlink for device ${devEui}: ${response.statusText}`);
+    }
+    return await response.json();
   }
 
   async registerDevice(conReq: DeviceConnectRequest) {
@@ -82,7 +86,7 @@ export class ChirpService {
     };
 
     // Create device
-    return await fetch(`${this.chirpApi}/api/devices`, {
+    const response = await fetch(`${this.chirpApi}/api/devices`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,6 +94,10 @@ export class ChirpService {
       },
       body: JSON.stringify(regBuilder)
     });
+    if (!response.ok) {
+      throw new Error(`Failed to register device ${conReq.devEui}: ${response.statusText}`);
+    }
+    return await response.json();
   }
 
   async checkDeviceExists(conReq: DeviceConnectRequest): Promise<DeviceChirpstackStatus> {
@@ -145,7 +153,7 @@ export class ChirpService {
     };
 
     // Activate ABP
-    return await fetch(`${this.chirpApi}/api/devices/${conReq.devEui}/activate`, {
+    const response = await fetch(`${this.chirpApi}/api/devices/${conReq.devEui}/activate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -153,6 +161,10 @@ export class ChirpService {
       },
       body: JSON.stringify(activation)
     });
+    if (!response.ok) {
+      throw new Error(`Failed to activate device ${conReq.devEui}: ${response.statusText}`);
+    }
+    return await response.json();
   }
 
   async onDeviceConnect(conReq: DeviceConnectRequest) {

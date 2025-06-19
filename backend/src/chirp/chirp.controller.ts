@@ -11,11 +11,11 @@ export class ChirpController {
 
   @Post("/onconnect")
   async onConnect(@Body() body: DeviceConnectRequest) {
-    this.chirpService.onDeviceConnect(body);
+    await this.chirpService.onDeviceConnect(body);
   }
 
   @Post("/downlink")
   async onDownlink(@Body() body: DownlinkRequest) {
-    this.chirpService.scheduleDownlink(body);
+    await this.chirpService.scheduleDownlink(body);
   }
 }

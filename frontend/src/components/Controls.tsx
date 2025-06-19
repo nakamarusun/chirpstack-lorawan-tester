@@ -1,6 +1,8 @@
 import React from 'react'
+import useLoRaWAN from '../hooks/useLoRaWAN'
 
 export default function Controls() {
+  const lorawan = useLoRaWAN();
   return (
     <div className="p-4">
       <p>
@@ -21,6 +23,7 @@ export default function Controls() {
       <p>
         Payload Size
       </p>
+      <p>{lorawan.devEui}</p>
     </div>
   )
 }
