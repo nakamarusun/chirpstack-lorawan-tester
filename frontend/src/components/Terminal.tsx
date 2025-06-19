@@ -4,19 +4,16 @@ import useSerial from '../hooks/useSerial';
 import clsx from 'clsx';
 import gwPic from '../assets/station-minimalistic-svgrepo-com.svg';
 import ChirpstackStream from './ChirpstackStream';
-
-function trimValueFromAt(value: string): string {
-  return value.split("\n")[0].trim();
-}
+import useLoRaWAN from '../hooks/useLoRaWAN';
 
 export default function Terminal() {
   const [canUseSerial] = useState(() => "serial" in navigator);
   const serial = useSerial();
-
-  // const [devEui, setDevEui] = useState("");
-  const [devAddr, setDevAddr] = useState("00000000");
-  const [nwkSKey, setNwkSKey] = useState("00000000000000000000000000000000");
-  const [appSKey, setAppSKey] = useState("00000000000000000000000000000000");
+  const {
+    devAddr,
+    nwkSKey,
+    appSKey,
+  } = useLoRaWAN();
 
   const [termLog, setTermLog] = useState<string[]>([]);
 
@@ -26,17 +23,11 @@ export default function Terminal() {
     if (serialLogsRef.current) {
       serialLogsRef.current.scrollTop = serialLogsRef.current.scrollHeight;
     }
-  }, [termLog])
+  }, [termLog]);
 
   // Do some preliminary data collection
   useEffect(() => {
-    if (serial.state === "disconnected") return;
-
-    (async () => {
-      setDevAddr(trimValueFromAt(await serial.sendAndWait("AT+DEVADDR=?", 1000)));
-      setNwkSKey(trimValueFromAt(await serial.sendAndWait("AT+NWKSKEY=?", 1000)));
-      setAppSKey(trimValueFromAt(await serial.sendAndWait("AT+APPSKEY=?", 1000)));
-    })();
+    if (serial.state !== "connected") return;
 
     function addToLog(data: string, addStr: string="") {
       const timestamp = (new Date()).toISOString().replace("T", " ").replace("Z", "");
@@ -49,7 +40,7 @@ export default function Terminal() {
       addToLog(data);
     });
     serial.onDataSent((data) => {
-      addToLog(data, " > ");
+      addToLog(data, ">");
     });
   }, [serial.state]);
 

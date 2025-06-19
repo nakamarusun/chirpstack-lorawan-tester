@@ -9,7 +9,7 @@ export type SerialOnDataNotify = (data: string) => void
 
 interface SerialContext {
   sendData(data: string): Promise<void>;
-  sendAndWait(data: string, timeout: number): Promise<string>;
+  sendAndWait(data: string, timeout?: number): Promise<string>;
   onDataReceived(callback: SerialOnDataNotify): void;
   releaseOnDataReceived(callback: SerialOnDataNotify): void;
   onDataSent(callback: SerialOnDataNotify): void;
@@ -121,7 +121,7 @@ export function SerialProvider({ children }: { children: React.ReactNode }) {
     releaseOnDataReceived: (callback: SerialOnDataNotify) => {
       toNotifyRef.current = toNotifyRef.current.filter(cb => cb !== callback);
     },
-    sendAndWait: async (data: string, timeout: number): Promise<string> => {
+    sendAndWait: async (data: string, timeout: number=1000): Promise<string> => {
       return new Promise((resolve, reject) => {
         let resolved = false;
         const onrecv: SerialOnDataNotify = (receivedData) => {
