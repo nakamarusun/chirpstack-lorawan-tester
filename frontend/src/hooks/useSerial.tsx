@@ -42,11 +42,22 @@ export function SerialProvider({ children }: { children: React.ReactNode }) {
     
     (async () => {
       try {
+        let temp = "";
         while (true) {
           const { value, done } = await reader.read();
           if (done) break;
-          // console.log("Data received:", value, toNotifyRef.current.length);
-          toNotifyRef.current.forEach(callback => callback(value));
+
+          for (const c of value) {
+            if (c === "\r" || c === "\n") {
+              if (temp) {
+                // Notify all registered callbacks with the complete line
+                toNotifyRef.current.forEach(callback => callback(temp));
+                temp = ""; // Reset temp for the next line
+              }
+            } else {
+              temp += c; // Append character to temp
+            }
+          }
         }
       } catch (error) {
         console.error("Error reading from serial port:", error);
