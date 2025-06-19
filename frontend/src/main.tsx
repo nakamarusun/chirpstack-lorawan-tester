@@ -6,6 +6,7 @@ import { AuthProvider } from './hooks/useAuth.tsx'
 import '@ant-design/v5-patch-for-react-19';
 import { SerialProvider } from './hooks/useSerial.tsx';
 import { LoRaWANProvider } from './hooks/useLoRaWAN.tsx';
+import { ChirpstackStreamProvider } from './hooks/useChirpstackStream.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <SerialProvider>
           <LoRaWANProvider>
-           <App />
+            <ChirpstackStreamProvider>
+              <App />
+            </ChirpstackStreamProvider>
           </LoRaWANProvider>
         </SerialProvider>
       </AuthProvider>

@@ -4,6 +4,11 @@ import { nanoIDRandomHex } from "../tools";
 import { onDeviceConnected } from "../service/device";
 import type { DeviceConnectRequest } from "../../../backend/src/models/chirp";
 
+interface SignalStrength {
+  rssi: number;
+  snr: number;
+}
+
 interface LoRaWANContext {
   setFrequency: (frequency: number) => Promise<void>;
   frequency: number;
@@ -25,6 +30,12 @@ interface LoRaWANContext {
   nwkSKey: string;
   setDevEui: (devEui: string) => Promise<void>;
   devEui: string;
+
+  confirmed: boolean;
+  setConfirmed: (confirmed: boolean) => void;
+
+  sendCounter: number;
+  signal: SignalStrength;
 }
 
 function trimValueFromAt(value: string): string {
@@ -34,14 +45,22 @@ function trimValueFromAt(value: string): string {
 export function LoRaWANProvider({children}: {children: React.ReactNode}) {
   const serial = useSerial();
 
-  const [devEui, setDevEui] = useState("000000000000000");
-  const [devAddr, setDevAddr] = useState("00000000");
-  const [nwkSKey, setNwkSKey] = useState("00000000000000000000000000000000");
-  const [appSKey, setAppSKey] = useState("00000000000000000000000000000000");
+  const [devEui, setDevEui] = useState("");
+  const [devAddr, setDevAddr] = useState("");
+  const [nwkSKey, setNwkSKey] = useState("");
+  const [appSKey, setAppSKey] = useState("");
 
-  const [frequency, setFrequency] = useState(868100000);
+  const [frequency, setFrequency] = useState(0);
   const [dataRate, setDataRate] = useState(5);
-  const [txPower, setTxPower] = useState(14);
+  const [txPower, setTxPower] = useState(0);
+
+  const [confirmed, setConfirmed] = useState(false);
+
+  const [sendCounter, setSendCounter] = useState(0);
+  const [signal, setSignal] = useState<SignalStrength>({
+    rssi: 0,
+    snr: 0,
+  });
 
   function connectToServer({
     devAddr,
@@ -91,6 +110,9 @@ export function LoRaWANProvider({children}: {children: React.ReactNode}) {
     frequency,
     dataRate,
     txPower,
+    sendCounter,
+    signal,
+    confirmed,
     resetKeys: async () => {
       const nwkSKey = nanoIDRandomHex(32);
       const appSKey = nanoIDRandomHex(32);
@@ -138,11 +160,21 @@ export function LoRaWANProvider({children}: {children: React.ReactNode}) {
       if (data.length > 255 * 2) {
         throw new Error("Payload must be less than 255 characters");
       }
-      await serial.sendData(`AT+SEND=${fPort}:${data}`);
+      setSendCounter((prev) => prev + 1);
+      await serial.sendAndWait(`AT+SEND=${fPort}:${data}`, 10000);
+
+      // Get the signal strength after sending
+      const rssi = parseInt(trimValueFromAt(await serial.sendAndWait("AT+RSSI=?", 1000)));
+      const snr = parseInt(trimValueFromAt(await serial.sendAndWait("AT+SNR=?", 1000)));
+      setSignal({ rssi, snr });
     },
     setDevEui: async (devEui: string) => {
       await serial.sendAndWait(`AT+DEVEUI=${devEui}`);
       setDevEui(devEui);
+    },
+    setConfirmed: async (confirmed: boolean) => {
+      await serial.sendAndWait(`AT+CFM=${confirmed ? 1 : 0}`);
+      setConfirmed(confirmed);
     },
   }
 

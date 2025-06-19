@@ -1,11 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
-import config from '../config';
-import { EventSource } from 'eventsource';
-import useAuth from '../hooks/useAuth';
+import type { ChirpstackAppUplinkEvent } from '../models/chirpstack';
+import useChirpstackStream from '../hooks/useChirpstackStream';
+
+function uplinkEventToString(event: ChirpstackAppUplinkEvent): string {
+  return event.rxInfo.reduce((cur, rx) => {
+    return cur + `[${new Date(event.time).toISOString()} ${event.confirmed ? "CFM" : "UCFM"}] GWID: ${rx.gatewayId} (RSSI ${rx.rssi}, SNR ${rx.snr}) freq: ${event.txInfo.frequency/1000000} DR:${event.txInfo.modulation.lora.spreadingFactor} fcnt: ${event.fCnt} devaddr: ${event.devAddr} data_len: ${atob(event.data).length}\n`;
+  }, "")
+}
 
 export default function ChirpstackStream() {
   const [messages, setMessages] = useState<string[]>([]);
-  const auth = useAuth();
+  const chirpstackStream = useChirpstackStream();
 
   const chirpstackLogsRef = useRef<HTMLPreElement>(null);
 
@@ -15,35 +20,21 @@ export default function ChirpstackStream() {
     }
   }, [messages]);
 
-  // Use SSE to connect to Chirpstack logs
   useEffect(() => {
-    const sse = new EventSource(
-      `${config.baseUrl}/events/packets`,
-      {
-        fetch: (input, init) => (
-          fetch(input, {
-            ...init,
-            headers: {
-              ...init.headers,
-              Authorization: `Bearer ${auth.token}`,
-            },
-          })
+    const subscriber = (event: ChirpstackAppUplinkEvent) => {
+      setMessages((prev) => [...prev, uplinkEventToString(event)]);
+    }
 
-        ),
-      }
-    );
-    sse.addEventListener("message", (event) => {
-      setMessages((prev) => [...prev, event.data]);
-      // Here you can handle the data, e.g., update state or log it
-    });
+    chirpstackStream.subscribe(subscriber);
 
     return () => {
-      sse.close();
+      chirpstackStream.unsubscribe(subscriber);
     }
-  }, []);
+  }, [chirpstackStream]);
+
   return (
     <pre ref={chirpstackLogsRef} className="h-full overflow-y-auto px-2 whitespace-pre-wrap break-all">
-      {messages.join("\n")}
+      {messages.join("")}
     </pre>
   )
 }

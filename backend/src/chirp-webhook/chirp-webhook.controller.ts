@@ -13,7 +13,6 @@ export class ChirpWebhookController {
   onWebhook(
     @Ctx() ctx: MqttContext
   ) {
-    console.log("Received webhook data:", ctx.getPacket().payload.toString());
-    this.chirpWebhookService.onUplink(ctx.getPacket().payload.toString());
+    this.chirpWebhookService.onUplink(JSON.parse(ctx.getPacket().payload.toString()));
   }
 }

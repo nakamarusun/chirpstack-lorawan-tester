@@ -1,22 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
-import SerialConnection from './SerialConnection';
-import useSerial from '../hooks/useSerial';
 import clsx from 'clsx';
-import gwPic from '../assets/station-minimalistic-svgrepo-com.svg';
+import { useEffect, useRef, useState } from 'react';
+import useSerial from '../hooks/useSerial';
 import ChirpstackStream from './ChirpstackStream';
-import useLoRaWAN from '../hooks/useLoRaWAN';
+import SerialConnection from './SerialConnection';
+import BottomInfo from './Terminal/BottomInfo';
 
 export default function Terminal() {
   const [canUseSerial] = useState(() => "serial" in navigator);
-  const serial = useSerial();
-  const {
-    devAddr,
-    nwkSKey,
-    appSKey,
-  } = useLoRaWAN();
-
   const [termLog, setTermLog] = useState<string[]>([]);
 
+  const serial = useSerial();
   const serialLogsRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
@@ -83,45 +76,7 @@ export default function Terminal() {
 
       {/* Bottom long text */}
       <div className="flex flex-col">
-        <div className="bg-blue-600 flex flex-row items-center">
-          <div className="flex flex-row flex-grow text-left">
-            <div className="font-semibold pl-2">
-              <p>Last Conn</p>
-              <p>-6.32, 553.2</p>
-              <p>05:12:22</p>
-            </div>
-            <div className="w-3" />
-            <div>
-              <p>Downlink</p>
-              <p>DL RSSI: 55</p>
-              <p>DL SNR: 55</p>
-            </div>
-            <div className="w-3" />
-            <div>
-              <p>gw-05321233</p>
-              <p>RSSI: 55</p>
-              <p>SNR: 55</p>
-            </div>
-          </div>
-          <div className="flex flex-row items-center gap-2 bg-fuchsia-600 h-full">
-            <img src={gwPic} alt="Station Minimalistic Logo" className="w-10 h-10 p-1" />
-            <p className="text-3xl font-bold mr-2">0</p>
-          </div>
-        </div>
-        <div className="bg-green-500 text-black py-0.5 flex flex-wrap flex-row items-start justify-between px-2">
-          <div>
-            <span className="mr-2">DevAddr:</span>
-            <span>{devAddr}</span>
-          </div>
-          <div>
-            <span className="mr-2">NwkSKey:</span>
-            <span>{nwkSKey}</span>
-          </div>
-          <div>
-            <span className="mr-2">AppSKey:</span>
-            <span>{appSKey}</span>
-          </div>
-        </div>
+        <BottomInfo />
       </div>
     </div>
   )
