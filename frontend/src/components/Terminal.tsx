@@ -65,7 +65,7 @@ export default function Terminal() {
             <p className="font-semibold bg-cyan-600 px-2">
               Serial Term
             </p>
-            <pre ref={serialLogsRef} className="overflow-y-auto px-2 whitespace-pre-wrap">
+            <pre ref={serialLogsRef} className="overflow-y-auto px-2 whitespace-pre-wrap break-all">
               {termLog.join("\n")}
             </pre>
           </div>

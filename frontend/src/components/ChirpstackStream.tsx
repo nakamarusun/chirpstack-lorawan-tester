@@ -42,7 +42,7 @@ export default function ChirpstackStream() {
     }
   }, []);
   return (
-    <pre ref={chirpstackLogsRef} className="h-full overflow-y-auto px-2 whitespace-pre-wrap">
+    <pre ref={chirpstackLogsRef} className="h-full overflow-y-auto px-2 whitespace-pre-wrap break-all">
       {messages.join("\n")}
     </pre>
   )

@@ -105,38 +105,44 @@ export function LoRaWANProvider({children}: {children: React.ReactNode}) {
       });
     },
     setDevAddr: async (devAddr: string) => {
-      setDevAddr(devAddr);
       await serial.sendAndWait(`AT+DEVADDR=${devAddr}`);
+      setDevAddr(devAddr);
     },
     setNwkSKey: async (nwkSKey: string) => {
-      setNwkSKey(nwkSKey);
       await serial.sendAndWait(`AT+NWKSKEY=${nwkSKey}`);
+      setNwkSKey(nwkSKey);
     },
     setAppSKey: async (appSKey: string) => {
-      setAppSKey(appSKey);
       await serial.sendAndWait(`AT+APPSKEY=${appSKey}`);
+      setAppSKey(appSKey);
     },
     setFrequency: async (frequency: number) => {
-      setFrequency(frequency);
       if (frequency < 400000000 || frequency > 950000000) {
         throw new Error("Frequency out of range");
       }
       await serial.sendAndWait(`AT+FREQ=${frequency}`);
+      setFrequency(frequency);
     },
     setDR: async (dataRate: number) => {
-      setDataRate(dataRate);
       await serial.sendAndWait(`AT+DR=${dataRate}`);
+      setDataRate(dataRate);
     },
     setTxPower: async (txPower: number) => {
+      await serial.sendAndWait(`AT+TXP=${txPower}`);
       setTxPower(txPower);
-      await serial.sendAndWait(`AT+TXPOWER=${txPower}`);
     },
     send: async (fPort: number, data: string) => {
+      if (fPort < 1 || fPort > 223) {
+        throw new Error("fPort must be between 1 and 223");
+      }
+      if (data.length > 255 * 2) {
+        throw new Error("Payload must be less than 255 characters");
+      }
       await serial.sendData(`AT+SEND=${fPort}:${data}`);
     },
     setDevEui: async (devEui: string) => {
-      setDevEui(devEui);
       await serial.sendAndWait(`AT+DEVEUI=${devEui}`);
+      setDevEui(devEui);
     },
   }
 
