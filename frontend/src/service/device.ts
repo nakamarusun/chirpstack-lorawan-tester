@@ -1,4 +1,4 @@
-import { DeviceConnectRequest, DownlinkRequest } from "../../../backend/src/models/chirp";
+import type { DeviceConnectRequest, DownlinkRequest } from "../../../backend/src/models/chirp";
 import config from "../config";
 
 export function onDeviceConnected(devCon: DeviceConnectRequest): Promise<any> {

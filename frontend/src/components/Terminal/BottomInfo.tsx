@@ -19,10 +19,6 @@ export default function BottomInfo() {
     lon: -1,
     alt: -1,
   });
-  const [lastDownlink, setLastDownlink] = useState<LinkParam>({
-    rssi: 0,
-    snr: 0,
-  });
   const [lastUplink, setLastUplink] = useState<LinkParam[]>([]);
 
   const {
@@ -39,10 +35,6 @@ export default function BottomInfo() {
   useEffect(() => {
     setGatewaySeen(0);
     setLastTx(new Date());
-    setLastDownlink({
-      rssi: -1,
-      snr: -1,
-    });
     if (geolocated.isGeolocationAvailable && geolocated.isGeolocationEnabled && geolocated.coords) {
       setLastGPS({
         lat: geolocated.coords.latitude,

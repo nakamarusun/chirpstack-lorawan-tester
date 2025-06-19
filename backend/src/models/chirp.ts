@@ -1,11 +1,11 @@
-export class DeviceConnectRequest {
+export interface DeviceConnectRequest {
   devEui: string;
   devAddr: string;
   nwkSKey: string;
   appSKey: string;
 }
 
-export class DownlinkRequest {
+export interface DownlinkRequest {
   devEui: string;
   fPort: number;
   data: string;

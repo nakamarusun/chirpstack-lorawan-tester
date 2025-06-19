@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+backend/node_modules
+backend/dist
+backend/build
+frontend/node_modules
+frontend/dist
+frontend/build
+npm-debug.log
+Dockerfile
+.dockerignore
