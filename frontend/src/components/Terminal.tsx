@@ -6,7 +6,7 @@ import SerialConnection from './SerialConnection';
 import BottomInfo from './Terminal/BottomInfo';
 
 export default function Terminal() {
-  const [canUseSerial] = useState(() => "serial" in navigator);
+  // const [canUseSerial] = useState(() => "serial" in navigator);
   const [termLog, setTermLog] = useState<string[]>([]);
 
   const serial = useSerial();
