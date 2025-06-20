@@ -38,13 +38,13 @@ export default function Terminal() {
   }, [serial.state]);
 
 
-  if (!canUseSerial) {
-    return (
-      <div className="text-red-500 font-source-code-pro text-lg font-bold">
-        Browser tidak mendukung Web Serial API. Silahkan gunakan browser yang mendukung seperti Google Chrome atau Microsoft Edge.
-      </div>
-    );
-  }
+  // if (!canUseSerial) {
+  //   return (
+  //     <div className="text-red-500 font-source-code-pro text-lg font-bold">
+  //       Browser tidak mendukung Web Serial API. Silahkan gunakan browser yang mendukung seperti Google Chrome atau Microsoft Edge.
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="font-source-code-pro text-xs md:text-sm flex flex-col text-white h-full w-full font-normal relative">
