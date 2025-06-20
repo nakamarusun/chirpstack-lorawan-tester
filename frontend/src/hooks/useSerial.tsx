@@ -1,4 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  serial as serialPolyfill, SerialPort as SerialPortPolyfill,
+} from 'web-serial-polyfill';
 
 export type DataBitsType = 7 | 8;
 export type StopBitsType = 1 | 2;
@@ -6,6 +9,9 @@ export type EnterSendsType = "" | "\r" | "\n" | "\r\n";
 export type SerialConnectionType = "connected" | "disconnected";
 
 export type SerialOnDataNotify = (data: string) => void
+
+export type SerialUsed = typeof serialPolyfill;
+export type SerialPortUsed = SerialPortPolyfill;
 
 interface SerialContext {
   sendData(data: string): Promise<void>;
@@ -27,14 +33,14 @@ interface SerialContext {
 }
 
 export function SerialProvider({ children }: { children: React.ReactNode }) {
-  const [port, setPort] = useState<SerialPort | null>(null);
+  const [port, setPort] = useState<SerialPortUsed | null>(null);
   const [enterSends, setEnterSends] = useState<EnterSendsType>("\r\n");
 
   const toNotifyRef = useRef<SerialOnDataNotify[]>([]);
   const onSentRef = useRef<SerialOnDataNotify[]>([]);
 
   useEffect(() => {
-    if (!port) return;
+    if (!port || !port.readable) return;
 
     const textDecoder = new TextDecoderStream();
     const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
@@ -79,7 +85,8 @@ export function SerialProvider({ children }: { children: React.ReactNode }) {
     state: port ? "connected" : "disconnected",
     openConnection: async (baud, flowControl, parity, dataBits, stopBits, enterSends) => {
       try {
-        const serial: Serial | undefined = navigator.serial;
+        // const serial: SerialUsed | undefined = navigator.serial;
+        const serial : SerialUsed | undefined = serialPolyfill;
         if (!serial) {
           throw new Error("Web Serial API is not supported in this browser.");
         }
@@ -105,7 +112,7 @@ export function SerialProvider({ children }: { children: React.ReactNode }) {
       }
     },
     sendData: async (data: string) => {
-      if (!port) {
+      if (!port || !port.writable) {
         throw new Error("Serial port is not open.");
       }
       const encoder = new TextEncoder();
