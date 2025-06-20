@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import {
-  serial as serialPolyfill, SerialPort as SerialPortPolyfill,
-} from 'web-serial-polyfill';
+
 
 export type DataBitsType = 7 | 8;
 export type StopBitsType = 1 | 2;
@@ -10,8 +8,10 @@ export type SerialConnectionType = "connected" | "disconnected";
 
 export type SerialOnDataNotify = (data: string) => void
 
-export type SerialUsed = typeof serialPolyfill;
-export type SerialPortUsed = SerialPortPolyfill;
+// export type SerialUsed = typeof serialPolyfill;
+// export type SerialPortUsed = SerialPortPolyfill;
+export type SerialUsed = Serial;
+export type SerialPortUsed = SerialPort;
 
 interface SerialContext {
   sendData(data: string): Promise<void>;
@@ -85,8 +85,8 @@ export function SerialProvider({ children }: { children: React.ReactNode }) {
     state: port ? "connected" : "disconnected",
     openConnection: async (baud, flowControl, parity, dataBits, stopBits, enterSends) => {
       try {
-        // const serial: SerialUsed | undefined = navigator.serial;
-        const serial : SerialUsed | undefined = serialPolyfill;
+        const serial: SerialUsed | undefined = navigator.serial;
+        // const serial : SerialUsed | undefined = serialPolyfill;
         if (!serial) {
           throw new Error("Web Serial API is not supported in this browser.");
         }
