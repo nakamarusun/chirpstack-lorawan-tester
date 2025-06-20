@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from "@nestjs/platform-express";
+import { join } from "path";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -22,10 +23,10 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   // Serve static files from the 'public' directory
-  app.useStaticAssets('public', {
-    prefix: '/public',
+  app.useStaticAssets(join(__dirname, '../', 'public'), {
+    prefix: '/',
   });
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
