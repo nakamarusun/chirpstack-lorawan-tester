@@ -21,6 +21,10 @@ WORKDIR /app/backend
 RUN npm run build
 
 # Build frontend
+# Base url based on build args
+ARG VITE_BASE_URL
+ENV VITE_BASE_URL=$VITE_BASE_URL
+
 WORKDIR /app/frontend
 RUN npm run build
 
