@@ -30,7 +30,8 @@ WORKDIR /app
 
 # Copy root package files and install only production deps
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+COPY ./backend/package.json ./backend/
+RUN npm ci --omit=dev --workspace=backend
 
 # Copy backend build output
 COPY --from=builder /app/backend/dist /app/dist
