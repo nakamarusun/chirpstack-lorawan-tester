@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Chirpstack LoRaWAN Tester</string>
+    <string name="title_activity_main">Chirpstack LoRaWAN Tester</string>
+    <string name="package_name">com.jasoncoding.chirploratest</string>
+    <string name="custom_url_scheme">com.jasoncoding.chirploratest</string>
+</resources>
