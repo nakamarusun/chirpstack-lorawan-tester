@@ -53,7 +53,7 @@ export default function Terminal() {
   }
 
   return (
-    <div className="font-source-code-pro text-xs md:text-sm flex flex-col text-white h-full w-full font-normal relative">
+    <div className="font-source-code-pro text-[11px] md:text-sm flex flex-col text-white h-full w-full font-normal relative">
       {/* Main screen */}
       <div className={clsx("flex-grow flex flex-col text-left overflow-auto", {
         "justify-center items-center": serial.state === "disconnected",

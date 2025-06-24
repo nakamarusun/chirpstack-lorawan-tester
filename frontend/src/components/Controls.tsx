@@ -120,14 +120,14 @@ export default function Controls() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-grow flex flex-col justify-center md:pr-8 px-8">
-        <div className="flex flex-row items-center w-full mb-8">
-          <label className='font-source-code-pro text-xl mr-4' htmlFor="freq">Frequency</label>
-          <input disabled={inputDisabled} name="freq" className='px-2 py-1 w-full bg-stone-900 text-white text-xl border-0' value={tempFreq} onChange={(e) => setTempFreq(Number(e.target.value))} />
+        <div className="flex flex-row items-center w-full mb-2 md:mb-8">
+          <label className='font-source-code-pro text-sm md:text-xl mr-4' htmlFor="freq">Frequency</label>
+          <input disabled={inputDisabled} name="freq" className='px-1 md:px-2 py-0.5 md:py-1 w-full bg-stone-900 text-white text-sm md:text-xl border-0' value={tempFreq} onChange={(e) => setTempFreq(Number(e.target.value))} />
         </div>
-        <div className="flex flex-row items-center w-full mb-8">
-          <label className='font-source-code-pro text-xl mr-4' htmlFor="sf">SF</label>
+        <div className="flex flex-row items-center w-full mb-2 md:mb-8">
+          <label className='font-source-code-pro text-sm md:text-xl mr-4' htmlFor="sf">SF</label>
           {/* Make this a stepped slider later */}
-          <select disabled={inputDisabled} name="sf" className='px-2 py-1 bg-stone-900 text-white text-xl border-0' value={tempSF} onChange={(e) => setTempSF(Number(e.target.value))}>
+          <select disabled={inputDisabled} name="sf" className='px-1 md:px-2 py-0.5 md:py-1 bg-stone-900 text-white text-sm md:text-xl border-0' value={tempSF} onChange={(e) => setTempSF(Number(e.target.value))}>
             <option value={5}>SF7</option>
             <option value={4}>SF8</option>
             <option value={3}>SF9</option>
@@ -136,13 +136,13 @@ export default function Controls() {
             <option value={0}>SF12</option>
           </select>
         </div>
-        <div className="flex flex-row items-center w-full mb-8">
-          <label className='font-source-code-pro text-xl mr-4' htmlFor="txpower">TX Power</label>
+        <div className="flex flex-row items-center w-full mb-2 md:mb-8">
+          <label className='font-source-code-pro text-sm md:text-xl mr-4' htmlFor="txpower">TX Power</label>
           {/* Make this a dial later */}
           <select
           disabled={inputDisabled}
             name="txpower"
-            className='px-2 py-1 bg-stone-900 text-white text-xl border-0'
+            className='px-1 md:px-2 py-0.5 md:py-1 bg-stone-900 text-white text-sm md:text-xl border-0'
             value={tempTxPower}
             onChange={(e) => setTempTxPower(Number(e.target.value))}
           >
@@ -160,18 +160,18 @@ export default function Controls() {
             <option value={0}>0</option>
           </select>
         </div>
-        <div className="flex flex-row items-center w-full gap-4">
+        <div className="flex flex-row items-center w-full gap-1 md:gap-4">
           <div className="w-full flex flex-col items-start">
-            <p className="font-semibold font-source-code-pro text-xl">Payload</p>
-            <input disabled={inputDisabled} value={payload} onChange={(e) => setPayload(e.target.value)} type="text" className="w-full px-2 py-1 bg-stone-900 text-white text-xl border-0" />
+            <p className="font-semibold font-source-code-pro text-sm md:text-xl">Payload</p>
+            <input disabled={inputDisabled} value={payload} onChange={(e) => setPayload(e.target.value)} type="text" className="w-full px-1 md:px-2 py-0.5 md:py-1 bg-stone-900 text-white text-sm md:text-xl border-0" />
           </div>
           <div className="w-16 flex flex-col items-start">
-            <p className="font-semibold font-source-code-pro text-xl">fPort</p>
-            <input disabled={inputDisabled} value={fPort} onChange={(e) => setFPort(Number(e.target.value))} type="text" className="w-full px-2 py-1 bg-stone-900 text-white text-xl border-0" />
+            <p className="font-semibold font-source-code-pro text-sm md:text-xl">fPort</p>
+            <input disabled={inputDisabled} value={fPort} onChange={(e) => setFPort(Number(e.target.value))} type="text" className="w-full px-1 md:px-2 py-0.5 md:py-1 bg-stone-900 text-white text-sm md:text-xl border-0" />
           </div>
         </div>
-        <div className="flex flex-row justify-end gap-4 mt-2 items-center">
-          <label className="font-source-code-pro text-xl" htmlFor="confirmed">Confirmed?</label>
+        <div className="flex flex-row justify-end gap-1 mt-2 items-center">
+          <label className="font-source-code-pro text-sm md:text-xl" htmlFor="confirmed">Confirmed?</label>
           <input type="checkbox" disabled={inputDisabled} checked={lorawan.confirmed} onChange={(e) => lorawan.setConfirmed(e.target.checked)} className="w-6 h-6" />
           <Keycap disabled={inputDisabled} onClick={() => setPayload("")}>
             Clear
@@ -189,7 +189,7 @@ export default function Controls() {
           </Keycap>
           <input
             disabled={inputDisabled}
-            className="px-2 py-1 bg-stone-900 text-white text-xl border-0 w-24"
+            className="px-1 md:px-2 py-0.5 md:py-1 bg-stone-900 text-white text-sm md:text-xl border-0 w-24"
             value={randomNumber}
             onChange={(e) => {
               const num = Number(e.target.value);

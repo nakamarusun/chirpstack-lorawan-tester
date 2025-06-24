@@ -89,9 +89,9 @@ export default function BottomInfo() {
           ))
         }
       </div>
-      <div className="flex flex-row items-center gap-2 bg-fuchsia-600 h-full">
-        <img src={gwPic} alt="Station Minimalistic Logo" className="w-10 h-10 p-1" />
-        <p className="text-3xl font-bold mr-2">{gatewaySeen}</p>
+      <div className="flex flex-row items-center gap-1 md:gap-2 bg-fuchsia-600 h-full">
+        <img src={gwPic} alt="Station Minimalistic Logo" className="w-8 h-8 md:w-10 md:h-10 p-1" />
+        <p className="text-xl md:text-3xl font-bold mr-2">{gatewaySeen}</p>
       </div>
     </div>
     <div className="bg-green-500 text-black py-0.5 flex flex-wrap flex-row items-start justify-between px-2">

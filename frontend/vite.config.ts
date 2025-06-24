@@ -8,4 +8,14 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  server: {
+    host: "0.0.0.0",
+    proxy: {
+      "/api": {
+        target: "https://lorawantest.tirtapakuan.co.id/api",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      }
+    },
+  },
 })
