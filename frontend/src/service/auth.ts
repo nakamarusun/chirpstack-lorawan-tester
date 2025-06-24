@@ -23,7 +23,7 @@ export async function login(password: string): Promise<string> {
   });
 
   if (!response.ok) {
-    throw new Error(`Login failed: ${response.statusText}`);
+    throw new Error(`Login failed: ${response.status}, ${await response.text()}`);
   }
 
   const data = await response.json();

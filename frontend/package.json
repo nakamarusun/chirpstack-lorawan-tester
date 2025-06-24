@@ -18,6 +18,7 @@
     "@capacitor/core": "^7.4.0",
     "@tailwindcss/vite": "^4.1.10",
     "antd": "^5.26.0",
+    "capacitor-usb-serial-plugin": "^0.0.19",
     "clsx": "^2.1.1",
     "eventsource": "^4.0.0",
     "nanoid": "^5.1.5",

@@ -4,9 +4,15 @@ import useSerial from '../hooks/useSerial';
 import ChirpstackStream from './ChirpstackStream';
 import SerialConnection from './SerialConnection';
 import BottomInfo from './Terminal/BottomInfo';
+import { Capacitor } from '@capacitor/core';
 
 export default function Terminal() {
-  const [canUseSerial] = useState(() => "serial" in navigator);
+  const [canUseSerial] = useState(() => {
+    if (Capacitor.getPlatform() === "web") {
+      return "serial" in navigator && typeof navigator.serial.requestPort === "function";
+    } else
+    return Capacitor.getPlatform() === "android";
+  });
   const [termLog, setTermLog] = useState<string[]>([]);
 
   const serial = useSerial();
