@@ -172,7 +172,7 @@ export default function Controls() {
         </div>
         <div className="flex flex-row justify-end gap-1 mt-2 items-center">
           <label className="font-source-code-pro text-sm md:text-xl" htmlFor="confirmed">Confirmed?</label>
-          <input type="checkbox" disabled={inputDisabled} checked={lorawan.confirmed} onChange={(e) => lorawan.setConfirmed(e.target.checked)} className="w-6 h-6" />
+          <input name="confirmed" type="checkbox" disabled={inputDisabled} checked={lorawan.confirmed} onChange={(e) => lorawan.setConfirmed(e.target.checked)} className="w-6 h-6" />
           <Keycap disabled={inputDisabled} onClick={() => setPayload("")}>
             Clear
           </Keycap>

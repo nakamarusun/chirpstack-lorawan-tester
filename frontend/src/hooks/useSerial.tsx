@@ -221,11 +221,13 @@ export function SerialProvider({ children }: { children: React.ReactNode }) {
         // Resolve once we receive "OK"
         let tempData = "";
         const onrecv: SerialOnDataNotify = (receivedData) => {
-          tempData += receivedData;
-          if (tempData.trim().endsWith("OK")) {
+          if (receivedData.trim().endsWith("OK")) {
             contextValue.releaseOnDataReceived(onrecv);
             resolved = true;
             resolve(tempData);
+          }
+          if (!resolved) {
+            tempData += receivedData;
           }
         };
         contextValue.onDataReceived(onrecv);
