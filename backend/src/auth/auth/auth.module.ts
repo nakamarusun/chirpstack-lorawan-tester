@@ -21,5 +21,6 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
   ],
+  exports: [JwtModule], // Export JwtModule so it can be used in other modules
 })
 export class AuthModule {}
