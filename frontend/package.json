@@ -25,6 +25,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-geolocated": "^4.3.0",
+    "reconnecting-eventsource": "^1.6.4",
     "tailwindcss": "^4.1.10",
     "web-serial-polyfill": "^1.0.15"
   },

@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useRef } from 'react'
 import type { ChirpstackAppUplinkEvent } from '../models/chirpstack';
 import config from '../config';
 import useAuth from './useAuth';
-import { EventSource } from 'eventsource';
+// import { EventSource } from 'eventsource';
+import ReconnectingEventSource from 'reconnecting-eventsource';
 
 export type ChirpstackUplinkSubscriber = (message: ChirpstackAppUplinkEvent) => void
 
@@ -18,26 +19,22 @@ export function ChirpstackStreamProvider({children}: {children: React.ReactNode}
   // Use SSE to connect to Chirpstack logs
   useEffect(() => {
     if (!auth.token) return;
-
-    const sse = new EventSource(
-      `${config.baseUrl}/events/packets`,
-      {
-        fetch: (input, init) => (
-          fetch(input, {
-            ...init,
-            headers: {
-              ...init.headers,
-              Authorization: `Bearer ${auth.token}`,
-            },
-          })
-
-        ),
-      }
+    const sse = new ReconnectingEventSource(
+      `${config.baseUrl}/events/packets?token=${auth.token}`,
     );
+
+    sse.onerror = (event) => {
+      console.log(`BRUH5 SSE connection error: ${JSON.stringify(event)} ${event}`);
+    };
 
     sse.addEventListener("message", (event) => {
       const data: ChirpstackAppUplinkEvent = JSON.parse(event.data);
       subsbcribersRef.current.forEach((callback) => callback(data));
+    });
+
+    // Add this for error handling:
+    sse.addEventListener("error", (event) => {
+      console.log(`BRUH4 SSE connection error: ${JSON.stringify(event)} ${event}`);
     });
 
     return () => {

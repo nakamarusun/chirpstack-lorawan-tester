@@ -1,21 +1,24 @@
-import { Controller, Query, Sse, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/auth/jwt.guard';
+import { Controller, Query, Sse, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { EventsService } from './events.service';
 
 @Controller('events')
 export class EventsController {
-
   constructor(
-    private readonly eventsService: EventsService
+    private readonly eventsService: EventsService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  // @UseGuards(JwtAuthGuard)
   @Sse("/packets")
   async getPings(@Query("token") token: string) {
     if (!token) {
-      throw new Error("Token is required");
+      throw new UnauthorizedException("Token is required");
     }
-    
-    return this.eventsService.listenToApp()
+    try {
+      this.jwtService.verify(token);
+    } catch (err) {
+      throw new UnauthorizedException("Invalid or expired token");
+    }
+    return this.eventsService.listenToApp();
   }
 }

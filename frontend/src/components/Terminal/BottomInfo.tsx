@@ -65,7 +65,7 @@ export default function BottomInfo() {
   }, [chirpstackStream]);
 
   return <>
-    <div className="bg-blue-600 flex flex-row items-center">
+    <div className="bg-blue-600 flex flex-row items-center overflow-x-auto">
       <div className="flex flex-row flex-grow text-left">
         <div className="font-semibold pl-2">
           <p>Last Conn</p>
