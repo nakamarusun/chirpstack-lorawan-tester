@@ -1,4 +1,4 @@
-import { Controller, Sse, UseGuards } from '@nestjs/common';
+import { Controller, Query, Sse, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/auth/jwt.guard';
 import { EventsService } from './events.service';
 
@@ -9,9 +9,13 @@ export class EventsController {
     private readonly eventsService: EventsService
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Sse("/packets")
-  async getPings() {
+  async getPings(@Query("token") token: string) {
+    if (!token) {
+      throw new Error("Token is required");
+    }
+    
     return this.eventsService.listenToApp()
   }
 }
